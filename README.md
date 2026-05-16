@@ -2,52 +2,64 @@
 
 A genuinely intelligent financial analyst chatbot built for the AuxoAI engineering take-home assignment. It uses a Hybrid RAG architecture to answer complex, multi-document financial queries accurately.
 
-## Key Features
-- **Hybrid Retrieval**: Combines Gemini dense embeddings with BM25 sparse retrieval (using Reciprocal Rank Fusion) for both semantic understanding and exact figure/ticker matching.
-- **Dynamic Output Routing**: Automatically determines if an answer is best presented as a chat message (Markdown), a professional PDF report, or an Excel sheet.
-- **Context-Aware Memory**: Handles follow-up questions intelligently.
-- **Source Citations**: Every claim is backed by document and page citations.
-- **Table-Aware Chunking**: Uses `pymupdf` and `pandas` to keep financial tables intact during chunking.
-
-## Setup Instructions
+## 🚀 Getting Started
 
 1. **Clone the repository**:
    ```bash
-   git clone <repo-url>
-   cd auxo-ai
+   git clone https://github.com/Atharvabsankhe/auxo-ai-fin-chatbot.git
+   cd auxo-ai-fin-chatbot
    ```
 
-2. **Set up the virtual environment**:
+2. **Setup Virtual Environment & Dependencies**:
    ```bash
-   python3 -m venv venv
-   source venv/bin/activate
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
    pip install -r requirements.txt
    ```
 
 3. **Environment Variables**:
-   Create a `.env` file in the root directory (use `.env.example` as a template) and add your free Gemini API key:
+   Create a `.env` file in the root directory and add your Gemini API key:
    ```env
    GEMINI_API_KEY=your_api_key_here
    ```
 
 4. **Add Data Documents**:
-   Place the required Infosys documents into the `data/` directory:
-   - `infosys-ar-25.pdf`
-   - `ifrs-usd-press-release_q1.pdf` ... `q4.pdf`
-   - `investor-sheet.xlsx`
-   - `500209.csv`
+   Place the required Infosys documents into the `data/` directory.
 
-## Running the Chatbot
+---
 
-Start the interactive CLI:
+## 🖥️ Running the Application
+
+### Option A: Modern Web Dashboard (Recommended)
+This launches the FastAPI backend and the Vite-powered "ChatGPT-style" UI.
+
+1. **Build the Frontend**:
+   ```bash
+   cd frontend && npm install && npm run build && cd ..
+   ```
+
+2. **Start the Unified Server**:
+   ```bash
+   source venv/bin/activate
+   python api.py
+   ```
+   Now visit **`http://localhost:8000`** in your browser.
+
+### Option B: Interactive CLI
+For those who prefer the terminal:
 ```bash
 python main.py
 ```
 
-The system will ingest the documents, index them into ChromaDB, and build the BM25 index. Once ready, you can start asking questions!
+---
 
-## Generated Outputs
-Any dynamically generated PDF reports or Excel sheets will be saved in the `output/` directory.
+## 🏗️ Architecture
+- **Hybrid Search**: Combines ChromaDB (semantic) and BM25 (keyword) using Reciprocal Rank Fusion (RRF).
+- **Intelligent Routing**: LLM autonomously decides whether to output Markdown, PDF, or Excel based on user intent.
+- **Resilient Ingestion**: SHA-256 content hashing prevents redundant indexing and API waste.
 
-## Sample Conversations
-See the `sample_conversations/` directory for examples of the chatbot generating PDF reports and Excel sheets.
+## 📄 Generated Outputs
+Any dynamically generated PDF reports or Excel sheets will be accessible via the **Sidebar** in the Web UI or saved locally in the `output/` directory.
+
+## 📈 Sample Conversations
+See `sample_conversations/mock_conversations.md` for 6 detailed analyst scenarios.
