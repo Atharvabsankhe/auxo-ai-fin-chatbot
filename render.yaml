@@ -2,6 +2,7 @@ services:
   - type: web
     name: auxo-ai-analyst
     runtime: python
+    plan: free
     buildCommand: |
       pip install -r requirements.txt
       cd frontend && npm install && npm run build
