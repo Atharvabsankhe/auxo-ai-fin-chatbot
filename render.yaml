@@ -11,9 +11,3 @@ services:
         sync: false
       - key: PORT
         value: 8000
-    disk:
-      name: data-storage
-      mountPath: /opt/render/project/src/data_storage
-      sizeGB: 1
-
-# Note: We need to update src/config.py to use the mountPath if it exists.
