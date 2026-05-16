@@ -1,13 +1,29 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import os
+import threading
 
 from main import AnalystChatbot
 
 app = FastAPI(title="AuxoAI Financial Analyst API")
+
+# Global state for indexing
+indexing_complete = False
+chatbot = None
+
+def run_indexing():
+    global chatbot, indexing_complete
+    print("🚀 Background indexing started...")
+    chatbot = AnalystChatbot()
+    chatbot.ingest_documents()
+    indexing_complete = True
+    print("✅ Background indexing finished!")
+
+# Start indexing in a separate thread immediately
+threading.Thread(target=run_indexing, daemon=True).start()
 
 # Setup CORS
 app.add_middleware(
@@ -18,21 +34,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize Chatbot globally
-chatbot = AnalystChatbot()
-chatbot.ingest_documents()
-
 class ChatRequest(BaseModel):
     query: str
 
+@app.get("/api/status")
+async def get_status():
+    return {"status": "ready" if indexing_complete else "indexing"}
+
 @app.post("/api/chat")
 async def chat_endpoint(request: ChatRequest):
+    if not indexing_complete:
+        return {"answer": "I am still indexing the financial documents. Please give me a minute to finish processing the reports!"}
+    
     if not request.query.strip():
         raise HTTPException(status_code=400, detail="Query cannot be empty")
     
     try:
         response = chatbot.chat(request.query)
-        # Convert absolute path to a relative URL path
         if response.get("file_path"):
             filename = os.path.basename(response["file_path"])
             response["file_url"] = f"/api/files/{filename}"
@@ -53,10 +71,9 @@ async def get_file(filename: str):
     return FileResponse(path=file_path, filename=filename, media_type=media_type)
 
 # Serve the Vite build
-# This must be at the end so it doesn't shadow the /api routes
 if os.path.exists("frontend/dist"):
     app.mount("/", StaticFiles(directory="frontend/dist", html=True), name="static")
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("api:app", host="0.0.0.0", port=int(os.getenv("PORT", 8000)), reload=True)
+    uvicorn.run("api:app", host="0.0.0.0", port=int(os.getenv("PORT", 8000)))
