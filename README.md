@@ -2,7 +2,7 @@
 
 A genuinely intelligent financial analyst chatbot built for the AuxoAI engineering take-home assignment. It uses a Hybrid RAG architecture to answer complex, multi-document financial queries accurately.
 
-## 🚀 Getting Started
+## Getting Started
 
 1. **Clone the repository**:
    ```bash
@@ -28,7 +28,7 @@ A genuinely intelligent financial analyst chatbot built for the AuxoAI engineeri
 
 ---
 
-## 🖥️ Running the Application
+##  Running the Application
 
 ### Option A: Modern Web Dashboard (Recommended)
 This launches the FastAPI backend and the Vite-powered "ChatGPT-style" UI.
@@ -53,13 +53,13 @@ python main.py
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 - **Hybrid Search**: Combines ChromaDB (semantic) and BM25 (keyword) using Reciprocal Rank Fusion (RRF).
 - **Intelligent Routing**: LLM autonomously decides whether to output Markdown, PDF, or Excel based on user intent.
 - **Resilient Ingestion**: SHA-256 content hashing prevents redundant indexing and API waste.
 
-## 📄 Generated Outputs
+## Generated Outputs
 Any dynamically generated PDF reports or Excel sheets will be accessible via the **Sidebar** in the Web UI or saved locally in the `output/` directory.
 
-## 📈 Sample Conversations
+## Sample Conversations
 See `sample_conversations/mock_conversations.md` for 6 detailed analyst scenarios.
