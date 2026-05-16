@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AuxoAI | Financial Analyst</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="app">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <button class="new-chat-btn">
+            <span class="btn-icon">🆕</span>
+            <span>New chat</span>
+          </button>
+        </div>
+        
+        <nav>
+          <div class="nav-section">
+            <div class="nav-item active"><span class="icon">🔍</span> Search chats</div>
+          </div>
+
+          <div class="nav-label">Recent Reports</div>
+          <ul id="report-list">
+            <li class="empty-state">No reports generated yet</li>
+          </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+          <div class="user-profile">
+            <div class="avatar">AS</div>
+            <div class="user-info">
+              <div class="user-name">Atharva Sankhe</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+      
+      <main class="chat-container">
+        <header class="chat-header">
+          <div class="header-left">
+            <div class="model-selector">
+              <span>AuxoAI</span>
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+          </div>
+          <div class="header-right">
+            <button class="icon-btn">📤</button>
+          </div>
+        </header>
+        
+        <div id="chat-messages" class="messages-area">
+          <div id="hero-section" class="hero">
+            <h2>Unlocking Financial Insights.</h2>
+            <div class="hero-tagline">Ready when you are.</div>
+          </div>
+        </div>
+        
+        <footer class="chat-input-area">
+          <div class="quick-actions">
+            <button class="action-btn" data-query="Analyze Infosys FY25 revenue performance">
+              <span class="icon">📈</span> Analyze Revenue
+            </button>
+            <button class="action-btn" data-query="Summarize key risk factors from the annual report">
+              <span class="icon">⚠️</span> Summarize Risks
+            </button>
+            <button class="action-btn" data-query="Give me an excel file of quarterly margins">
+              <span class="icon">📊</span> Export Data
+            </button>
+          </div>
+
+          <form id="chat-form">
+            <input type="text" id="user-input" placeholder="Ask anything about Infosys..." autocomplete="off" />
+            <div class="input-tools">
+              <button type="button" class="tool-btn">🎙️</button>
+              <button type="submit" id="send-btn">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+              </button>
+            </div>
+          </form>
+          <div class="input-hint">Enter to send • PDF and Excel reports available</div>
+        </footer>
+      </main>
+    </div>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>

@@ -106,6 +106,20 @@ class AnalystChatbot:
             else:
                 console.print(Panel(Markdown(answer), title="📊 Analyst Response", border_style="green"))
 
+    def chat(self, query: str) -> dict:
+        """Programmatic interface for the API to interact with the chatbot."""
+        format_choice = self.llm.determine_format(query)
+        retrieved_chunks = self.retriever.search(query, top_k=5)
+        answer = self.llm.generate_answer(query, retrieved_chunks, format_choice)
+
+        result = {"answer": answer, "format": format_choice, "file_path": None}
+        if format_choice == "PDF":
+            result["file_path"] = self.pdf_gen.generate(answer)
+        elif format_choice == "EXCEL":
+            result["file_path"] = self.excel_gen.generate(answer)
+
+        return result
+
 
 if __name__ == "__main__":
     bot = AnalystChatbot()
