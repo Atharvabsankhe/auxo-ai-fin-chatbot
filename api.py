@@ -16,16 +16,11 @@ chatbot = None
 
 def run_indexing():
     global chatbot, indexing_complete
+    print("🚀 Background indexing started...")
     chatbot = AnalystChatbot()
-    
-    if os.getenv("SKIP_INGESTION") == "true":
-        print("⚡ SKIP_INGESTION is true. Skipping document indexing to allow instant startup.")
-    else:
-        print("🚀 Background indexing started...")
-        chatbot.ingest_documents()
-        print("✅ Background indexing finished!")
-        
+    chatbot.ingest_documents()
     indexing_complete = True
+    print("✅ Background indexing finished!")
 
 # Start indexing in a separate thread immediately
 threading.Thread(target=run_indexing, daemon=True).start()
