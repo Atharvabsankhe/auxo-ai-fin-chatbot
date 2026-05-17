@@ -16,6 +16,13 @@ chatbot = None
 
 def run_indexing():
     global chatbot, indexing_complete
+    
+    if os.getenv("SKIP_INGESTION") == "true":
+        print("⚡ SKIP_INGESTION is true. Initializing chatbot and skipping indexing...")
+        chatbot = AnalystChatbot()
+        indexing_complete = True
+        return
+        
     print("🚀 Background indexing started...")
     chatbot = AnalystChatbot()
     if chatbot.retriever.bm25 is not None:
