@@ -12,3 +12,5 @@ services:
         sync: false
       - key: PORT
         value: 8000
+      - key: SKIP_INGESTION
+        value: "true"
