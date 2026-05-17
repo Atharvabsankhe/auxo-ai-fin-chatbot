@@ -109,7 +109,7 @@ class AnalystChatbot:
     def chat(self, query: str) -> dict:
         """Programmatic interface for the API to interact with the chatbot."""
         format_choice = self.llm.determine_format(query)
-        retrieved_chunks = self.retriever.search(query, top_k=5)
+        retrieved_chunks = self.retriever.search(query, top_k=3)
         answer = self.llm.generate_answer(query, retrieved_chunks, format_choice)
 
         result = {"answer": answer, "format": format_choice, "file_path": None}

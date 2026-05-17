@@ -93,27 +93,25 @@ class LLMManager:
         history_str = self._get_history_str()
         prompt = f"{system_prompt}\n\nContext:\n{context}\n\nConversation History:\n{history_str}\n\nUser Query: {query}"
 
-        for attempt in range(3):
-            try:
-                response = self.model.generate_content(prompt)
-                answer = response.text
+        try:
+            response = self.model.generate_content(prompt)
+            answer = response.text
 
-                # Update history
-                self.chat_history.append({"role": "user", "parts": [query]})
-                self.chat_history.append({"role": "model", "parts": [answer]})
+            # Update history
+            self.chat_history.append({"role": "user", "parts": [query]})
+            self.chat_history.append({"role": "model", "parts": [answer]})
 
-                # Keep history manageable (last 5 exchanges = 10 items)
-                if len(self.chat_history) > 10:
-                    self.chat_history = self.chat_history[-10:]
+            # Keep history manageable (last 5 exchanges = 10 items)
+            if len(self.chat_history) > 10:
+                self.chat_history = self.chat_history[-10:]
 
-                return answer
-            except Exception as e:
-                if "429" in str(e):
-                    time.sleep(15)
-                else:
-                    print(f"Generation error: {e}")
-                    return "I encountered an error generating the response. Please try again."
-        return "I was unable to generate a response due to API rate limits. Please wait a moment and try again."
+            return answer
+        except Exception as e:
+            if "429" in str(e) or "quota" in str(e).lower():
+                return "⚠️ **API Rate Limit Exceeded:** The free tier of Gemini has reached its limit. Please wait about 30 seconds and try your request again."
+            else:
+                print(f"Generation error: {e}")
+                return "I encountered an error generating the response. Please try again."
 
     def _get_history_str(self) -> str:
         if not self.chat_history:

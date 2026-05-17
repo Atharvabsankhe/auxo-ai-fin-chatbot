@@ -103,38 +103,33 @@ class VectorStore:
 
     def search(self, query: str, top_k: int = 5) -> List[dict]:
         """Search the vector store for similar chunks."""
-        for attempt in range(3):
-            try:
-                result = genai.embed_content(
-                    model=EMBEDDING_MODEL,
-                    content=query,
-                    task_type="retrieval_query",
-                )
-                query_embedding = result["embedding"]
+        try:
+            result = genai.embed_content(
+                model=EMBEDDING_MODEL,
+                content=query,
+                task_type="retrieval_query",
+            )
+            query_embedding = result["embedding"]
 
-                results = self.collection.query(
-                    query_embeddings=[query_embedding],
-                    n_results=top_k,
-                )
+            results = self.collection.query(
+                query_embeddings=[query_embedding],
+                n_results=top_k,
+            )
 
-                formatted = []
-                if results and results["ids"] and len(results["ids"][0]) > 0:
-                    for i in range(len(results["ids"][0])):
-                        formatted.append({
-                            "id": results["ids"][0][i],
-                            "content": results["documents"][0][i],
-                            "metadata": results["metadatas"][0][i],
-                            "distance": (
-                                results["distances"][0][i]
-                                if "distances" in results and results["distances"]
-                                else 0
-                            ),
-                        })
-                return formatted
-            except Exception as e:
-                if "429" in str(e):
-                    time.sleep(10)
-                else:
-                    print(f"Search error: {e}")
-                    return []
-        return []
+            formatted = []
+            if results and results["ids"] and len(results["ids"][0]) > 0:
+                for i in range(len(results["ids"][0])):
+                    formatted.append({
+                        "id": results["ids"][0][i],
+                        "content": results["documents"][0][i],
+                        "metadata": results["metadatas"][0][i],
+                        "distance": (
+                            results["distances"][0][i]
+                            if "distances" in results and results["distances"]
+                            else 0
+                        ),
+                    })
+            return formatted
+        except Exception as e:
+            print(f"Vector search bypassed (rate limit or error): {e}")
+            return []
