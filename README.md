@@ -48,6 +48,7 @@ This launches the FastAPI backend and the Vite-powered "ChatGPT-style" UI.
 ### Option B: Interactive CLI
 For those who prefer the terminal:
 ```bash
+source venv/bin/activate
 python main.py
 ```
 
