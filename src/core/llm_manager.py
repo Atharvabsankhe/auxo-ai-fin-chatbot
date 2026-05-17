@@ -16,6 +16,15 @@ class LLMManager:
 
     def determine_format(self, query: str) -> str:
         """Route the query to MARKDOWN, PDF, or EXCEL output format."""
+        q = query.lower()
+        
+        # Rule-based routing (instant, reliable, saves 3-5 seconds of latency)
+        if any(w in q for w in ["excel", "sheet", "xlsx", "csv", "data-heavy", "margins", "table", "numbers"]):
+            return "EXCEL"
+        if any(w in q for w in ["pdf", "report", "comprehensive", "summarize", "summary", "risk factors", "analysis", "synthesize"]):
+            return "PDF"
+            
+        # Fallback to LLM classification
         prompt = (
             "You are a routing assistant. Based on the user's query, decide the best output format.\n"
             "Options:\n"
