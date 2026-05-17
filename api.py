@@ -18,7 +18,11 @@ def run_indexing():
     global chatbot, indexing_complete
     print("🚀 Background indexing started...")
     chatbot = AnalystChatbot()
-    chatbot.ingest_documents()
+    if chatbot.retriever.bm25 is not None:
+        print("✅ Pre-built BM25 index found. Skipping document ingestion entirely to start instantly!")
+    else:
+        print("📝 No pre-built BM25 index found. Running local ingestion...")
+        chatbot.ingest_documents()
     indexing_complete = True
     print("✅ Background indexing finished!")
 

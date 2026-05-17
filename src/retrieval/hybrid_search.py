@@ -5,6 +5,10 @@ from src.models import DocumentChunk
 from src.retrieval.vector_store import VectorStore
 
 
+import os
+import pickle
+from src.config import Config
+
 class HybridRetriever:
     """Combines dense (Gemini embeddings) and sparse (BM25) retrieval with RRF."""
 
@@ -12,6 +16,30 @@ class HybridRetriever:
         self.vector_store = vector_store
         self.chunks: List[DocumentChunk] = []
         self.bm25 = None
+        self.pickle_path = os.path.join(Config.CHROMA_DB_DIR, "bm25.pkl")
+        
+        # Auto-load pre-built BM25 index if available
+        self.load_index()
+
+    def load_index(self):
+        if os.path.exists(self.pickle_path):
+            try:
+                with open(self.pickle_path, "rb") as f:
+                    data = pickle.load(f)
+                    self.chunks = data.get("chunks", [])
+                    self.bm25 = data.get("bm25")
+                print(f"✅ Loaded pre-built BM25 index with {len(self.chunks)} chunks from pickle.")
+            except Exception as e:
+                print(f"⚠️ Error loading BM25 index from pickle: {e}")
+
+    def save_index(self):
+        try:
+            os.makedirs(os.path.dirname(self.pickle_path), exist_ok=True)
+            with open(self.pickle_path, "wb") as f:
+                pickle.dump({"chunks": self.chunks, "bm25": self.bm25}, f)
+            print("💾 Saved BM25 index and chunks to pickle.")
+        except Exception as e:
+            print(f"⚠️ Error saving BM25 index to pickle: {e}")
 
     def index_chunks(self, chunks: List[DocumentChunk]):
         self.chunks.extend(chunks)
@@ -20,6 +48,9 @@ class HybridRetriever:
         tokenized_corpus = [chunk.content.lower().split() for chunk in self.chunks]
         if tokenized_corpus:
             self.bm25 = BM25Okapi(tokenized_corpus)
+
+        # Save index locally for future fast loads
+        self.save_index()
 
         # Add to vector store (handles batching internally)
         self.vector_store.add_chunks(chunks)
